@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://raw.githubusercontent.com/ebi-ait/checklist-store-template/main/gsc/gcs_mixs_soil/latest.json",
+  "title": "GSC MIxS soil",
+  "name": "gcs_mixs_soil",
+  "version": "2.0.0",
+  "description": "Genomic Standards Consortium package extension for reporting of measurements and observations obtained from the environment where the sample was obtained. By choosing the environmental package, a selection of fields can be made from a relevant subsets of the GSC terms.",
+  "type": "object",
+  "required": ["new_v2_mandatory_property"],
+  "properties": {
+    "v1_property": {
+      "title": "V1 Property",
+      "description": "This is the V1 property",
+      "type": "string",
+      "pattern": "^.+",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "relationship to oxygen": {
+      "description": "Is this organism an aerobe, anaerobe? Please note that aerobic and anaerobic are valid descriptors for microbial environments",
+      "type": "string",
+      "enum": [
+          "aerobe",
+          "anaerobe",
+          "facultative",
+          "microaerophilic",
+          "microanaerobe",
+          "obligate aerobe",
+          "obligate anaerobe"
+      ]
+    },
+    "v2_property": {
+      "description": "This is a 2.0.0 mandatory property",
+      "title": "V2 Property",
+      "type": "boolean"
+    }
+  }
+}
