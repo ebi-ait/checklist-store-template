@@ -34,14 +34,12 @@ jobs:
           fi
           done
       - name: Changelog must be filled with exact number of entries as schema updates
-        id: changed-log
-        if: steps.changed-files.outputs.checklists_any_changed == 'true'
         env:
-          CHANGED_CSV: ${{steps.changed-files.outputs.changelog_all_changed_files }}
-          COUNT_CHECKLISTS: ${{steps.changed-files.outputs.checklists_all_changed_files_count }}
+          CHANGELOG: 'changelog.csv'
+          COUNT_CHECKLISTS: ${{ steps.changed-files.outputs.checklists_all_changed_files_count }}
         run: |
-          recorded_changes=$(( $(cat $CHANGED_CSV | grep -vce "^$") -1 ))
-          if  $recorded_changes != $COUNT_CHECKLISTS ; then
+          recorded_changes=$(( $(cat $CHANGELOG | grep -vce "^$") -1 ))
+          if [ $recorded_changes -ne $COUNT_CHECKLISTS ]; then
           echo "Number of recorded changes ($recorded_changes) is different to number of changes in repository ($COUNT_CHECKLISTS)"
           exit 1
           fi
