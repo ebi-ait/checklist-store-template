@@ -9,22 +9,39 @@ permissions:
   contents: write
 
 jobs:
-  OnlyUpdateLatestSchemas:
+  CheckPR:
     runs-on: ubuntu-latest
+    name: Check PR for updated schemas
     steps:
       - uses: actions/checkout@v4
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
-          files: |
-            checklists/**/*
-      - name: Check only latest is updated
+          files_yaml: |
+            checklists:
+              - checklists/**/*
+            changelog:
+              - changelog.csv
+      - name: Check only latest checklists are updated
         env:
-          CHANGED_FILES: ${{steps.changed-files.outputs.all_changed_files }}
+          CHANGED_CHECKLISTS: ${{steps.changed-files.outputs.checklists_all_changed_files }}
         run: |
-          for file in ${CHANGED_FILES}; do
+          for file in ${CHANGED_CHECKLISTS}; do
           if grep -qv "latest" <<< $file; then
+          echo "$file is not the latest; Please update latest"
           exit 1
           fi
           done
+      - name: Changelog must be filled with exact number of entries as schema updates
+        id: changed-log
+        if: steps.changed-files.outputs.checklists_any_changed == 'true'
+        env:
+          CHANGED_CSV: steps.changed-files.outputs.changelog_all_changed_files
+          COUNT_CHECKLISTS: steps.changed-files.outputs.checklists_all_changed_files_count
+        run: |
+          recorded_changes=$(( $(cat $CHANGED_CSV | grep -vce "^$") -1 ))
+          if  $recorded_changes != $COUNT_CHECKLISTS ; then
+          echo "Number of recorded changes ($recorded_changes) is different to number of changes in repository ($COUNT_CHECKLISTS)"
+          exit 1
+          fi
