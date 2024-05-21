@@ -21,8 +21,6 @@ jobs:
           files_yaml: |
             checklists:
               - checklists/**/*
-            changelog:
-              - changelog.csv
       - name: Check only latest checklists are updated
         env:
           CHANGED_CHECKLISTS: ${{steps.changed-files.outputs.checklists_all_changed_files }}
@@ -34,6 +32,7 @@ jobs:
           fi
           done
       - name: Changelog must be filled with exact number of entries as schema updates
+        if: steps.changed-files.outputs.checklists_any_changed == 'true'
         env:
           CHANGELOG: 'changelog.csv'
           COUNT_CHECKLISTS: ${{ steps.changed-files.outputs.checklists_all_changed_files_count }}
