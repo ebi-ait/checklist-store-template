@@ -30,9 +30,9 @@
       ]
     },
     "v2_property": {
-      "description": "This is a 2.0.0 mandatory property",
+      "description": "This is a 2.0.0 mandatory property. This is going to pass the PR",
       "title": "V2 Property",
-      "type": "boolean"
+      "type": "boolean",
     }
   }
 }
